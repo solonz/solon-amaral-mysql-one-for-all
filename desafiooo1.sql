@@ -2,78 +2,78 @@ DROP DATABASE IF EXISTS SpotifyClone;
 
 CREATE DATABASE IF NOT EXISTS SpotifyClone;
 
-CREATE TABLE SpotifyClone.plano (
-  plano_id INT NOT NULL AUTO_INCREMENT,
-  plano_nome VARCHAR(50) NOT NULL,
-  plano_valor DOUBLE NOT NULL,
+CREATE TABLE SpotifyClone.plans (
+  plan_id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
+  price FLOAT(5, 2) NOT NULL,
 
-  PRIMARY KEY (plano_id)
+  PRIMARY KEY (plan_id)
 ) engine = InnoDB;
 
-CREATE TABLE SpotifyClone.usuario(
-  usuario_id INT NOT NULL AUTO_INCREMENT,
-  usuario_nome VARCHAR(50) NOT NULL,
-  usuario_idade INT NOT NULL,
-  plano_id INT NOT NULL,
-  usuario_data_assinatura DATE NOT NULL,
+CREATE TABLE SpotifyClone.users(
+  user_id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
+  age INT NOT NULL,
+  plan_id INT NOT NULL,
+  signature_date DATE NOT NULL,
 
-  PRIMARY KEY (usuario_id),
-  FOREIGN KEY (plano_id) REFERENCES plano(plano_id)
+  PRIMARY KEY (user_id),
+  FOREIGN KEY (plan_id) REFERENCES plans(plan_id)
 ) engine = InnoDB;
 
-CREATE TABLE SpotifyClone.artista (
-  artista_id INT NOT NULL AUTO_INCREMENT,
-  artista_nome VARCHAR(50) NOT NULL,
+CREATE TABLE SpotifyClone.artists (
+  artist_id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
 
-  PRIMARY KEY (artista_id)
+  PRIMARY KEY (artist_id)
 ) engine = InnoDB;
 
-CREATE TABLE SpotifyClone.seguindo (
-  usuario_id INT NOT NULL,
-  artista_id INT NOT NULL,
+CREATE TABLE SpotifyClone.following (
+  user_id INT NOT NULL,
+  artist_id INT NOT NULL,
 
-  CONSTRAINT PRIMARY KEY (usuario_id, artista_id),
-  FOREIGN KEY (usuario_id) REFERENCES usuario (usuario_id),
-  FOREIGN KEY (artista_id) REFERENCES artista (artista_id)
+  CONSTRAINT PRIMARY KEY (user_id, artist_id),
+  FOREIGN KEY (user_id) REFERENCES users (user_id),
+  FOREIGN KEY (artist_id) REFERENCES artists(artist_id)
 ) engine = InnoDB;
 
-CREATE TABLE SpotifyClone.album (
+CREATE TABLE SpotifyClone.albums (
 	album_id INT NOT NULL AUTO_INCREMENT,
-  	album_nome VARCHAR(50) NOT NULL,
-  	album_ano YEAR NOT NULL,
-  	artista_id INT NOT NULL,
+  	name VARCHAR(50) NOT NULL,
+  	released_year YEAR NOT NULL,
+  	artist_id INT NOT NULL,
 
   	PRIMARY KEY (album_id),
-  	FOREIGN KEY (artista_id) REFERENCES artista(artista_id)
+  	FOREIGN KEY (artist_id) REFERENCES artists(artist_id)
 ) engine = InnoDB;
 
-CREATE TABLE SpotifyClone.musica (
-  musica_id INT NOT NULL AUTO_INCREMENT,
-  musica_nome VARCHAR(50) NOT NULL,
-  musica_duracao INT NOT NULL,
+CREATE TABLE SpotifyClone.songs (
+  song_id INT NOT NULL AUTO_INCREMENT,
+  name VARCHAR(50) NOT NULL,
+  durantion_seconds INT NOT NULL,
   album_id INT NOT NULL,
 
-  PRIMARY KEY (musica_id),
-  FOREIGN KEY (album_id) REFERENCES album(album_id)
+  PRIMARY KEY (song_id),
+  FOREIGN KEY (album_id) REFERENCES albums(album_id)
 ) engine = InnoDB;
 
-CREATE TABLE SpotifyClone.historico (
-  usuario_id INT NOT NULL,
-  musica_id INT NOT NULL,
-  historico_data DATETIME NOT NULL,
+CREATE TABLE SpotifyClone.histories (
+  user_id INT NOT NULL,
+  song_id INT NOT NULL,
+  played_at DATETIME NOT NULL,
 
-  CONSTRAINT PRIMARY KEY (usuario_id, musica_id),
-  FOREIGN KEY (usuario_id) REFERENCES usuario (usuario_id),
-  FOREIGN KEY (musica_id) REFERENCES musica (musica_id)
+  CONSTRAINT PRIMARY KEY (user_id, song_id),
+  FOREIGN KEY (user_id) REFERENCES users(user_id),
+  FOREIGN KEY (song_id) REFERENCES songs(song_id)
 ) engine = InnoDB;
 
-INSERT INTO SpotifyClone.plano (plano_nome, plano_valor)
+INSERT INTO SpotifyClone.plans (name, price)
 VALUES  ('gratuito', 0.00),
         ('familiar', 7.99),
         ('universitário', 5.99),
         ('pessoal', 6.99);
 
-INSERT INTO SpotifyClone.usuario (usuario_nome, usuario_idade, usuario_data_assinatura, plano_id)
+INSERT INTO SpotifyClone.users (name, age, signature_date, plan_id)
 VALUES  ('Barbara Liskov', 82, '2019-10-20', 1),
         ('Robert Cecil Martin', 58, '2017-01-06', 1),
         ('Ada Lovelace', 37, '2017-12-30', 2),
@@ -85,7 +85,7 @@ VALUES  ('Barbara Liskov', 82, '2019-10-20', 1),
         ('Judith Butler', 45, '2020-05-13', 4),
         ('Jorge Amado', 58, '2017-02-17', 4);
 
-INSERT INTO SpotifyClone.artista (artista_nome)
+INSERT INTO SpotifyClone.artists (name)
 VALUES  ('Beyoncé'),
         ('Queen'),
         ('Elis Regina'),
@@ -93,7 +93,7 @@ VALUES  ('Beyoncé'),
         ('Blind Guardian'),
         ('Nina Simone');
 
-INSERT INTO SpotifyClone.album (album_nome, album_ano, artista_id)
+INSERT INTO SpotifyClone.albums (name, released_year, artist_id)
 VALUES  ('Renaissance', 2022, 1),
         ('Jazz', 1978, 2),
         ('Hot Space', 1982, 2),
@@ -104,7 +104,7 @@ VALUES  ('Renaissance', 2022, 1),
         ('I Put A Spell On You', 2012, 6);
 
 
-INSERT INTO SpotifyClone.musica (musica_nome, musica_duracao, album_id)
+INSERT INTO SpotifyClone.songs (name, durantion_seconds, album_id)
 VALUES  ('BREAK MY SOUL', 279, 1),
         ('VIRGO’S GROOVE', 369, 1),
         ('ALIEN SUPERSTAR', 116, 1),
@@ -116,7 +116,7 @@ VALUES  ('BREAK MY SOUL', 279, 1),
         ('The Bard’s Song', 244, 7),
         ('Feeling Good', 100, 8);
 
-INSERT INTO SpotifyClone.historico (usuario_id, musica_id, historico_data)
+INSERT INTO SpotifyClone.histories (user_id, song_id, played_at)
 VALUES  (1, 8, '2022-02-28 10:45:55'),
         (1, 2, '2020-05-02 05:30:35'),
         (1, 10, '2020-03-06 11:22:33'),
@@ -134,7 +134,7 @@ VALUES  (1, 8, '2022-02-28 10:45:55'),
         (9, 9, '2022-02-24 21:14:22'),
         (10, 3, '2015-12-13 08:30:22');
 
-INSERT INTO SpotifyClone.seguindo (usuario_id, artista_id)
+INSERT INTO SpotifyClone.following (user_id, artist_id)
 VALUES  (1, 1),
         (1, 2),
         (1, 3),
